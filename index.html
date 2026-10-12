@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Property Investment Model</title>
+<style>
+:root{font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:#172235;background:#f5f7fa}
+*{box-sizing:border-box}body{margin:0}.shell{max-width:1400px;margin:auto;padding:32px 22px}
+h1{font-size:1.7rem;margin:0 0 6px}h2{font-size:1.1rem;margin:0 0 16px}
+.sub,.hint{color:#627085}.sub{margin:0 0 24px}.layout{display:grid;grid-template-columns:330px minmax(0,1fr);gap:20px;align-items:start}
+.panel{background:#fff;border:1px solid #dce3ed;border-radius:12px;padding:22px;box-shadow:0 2px 10px #17223508}
+.inputs{display:grid;gap:13px}.field label{display:block;font-size:.85rem;font-weight:600;margin-bottom:5px}
+.field input{width:100%;border:1px solid #bfcbd9;border-radius:7px;padding:10px 11px;font:inherit;background:white;color:#172235}
+.field input:focus{outline:2px solid #7a9dd5;outline-offset:1px}.field input:read-only{background:#e9edf2;color:#677486;border-color:#d7dce4;cursor:not-allowed}
+.group{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:#63738b;border-bottom:1px solid #e5eaf0;padding:12px 0 7px;margin:3px 0}
+.summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:18px}
+.stat{border:1px solid #e2e8f0;border-radius:9px;padding:15px;min-width:0}.stat small{display:block;color:#64748b;margin-bottom:8px}.stat strong{font-size:1.25rem;overflow-wrap:anywhere}
+.tablewrap{overflow:auto;max-height:620px;border:1px solid #e2e8f0;border-radius:9px}
+table{border-collapse:collapse;min-width:1160px;width:100%;font-variant-numeric:tabular-nums;font-size:.83rem}
+th,td{padding:11px 12px;text-align:right;border-bottom:1px solid #e8edf4;white-space:nowrap}
+th:first-child,td:first-child{text-align:left;position:sticky;left:0;background:#fff}
+thead th{position:sticky;top:0;background:#f0f4f9;z-index:1;color:#41536b}thead th:first-child{z-index:2;background:#f0f4f9}
+tbody tr:hover td{background:#f7faff}tbody tr:hover td:first-child{background:#f7faff}
+.negative{color:#b23c42}.positive{color:#137553}.hint{font-size:.79rem;line-height:1.5;margin:15px 0 0}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.summary{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:520px){.summary{grid-template-columns:1fr}.shell{padding:20px 12px}}
+</style>
+<script src="app.js" defer></script>
+</head>
+<body>
+<main class="shell">
+<h1>Property investment model</h1>
+<p class="sub">Australian property investment projection. Edit assumptions to update the annual results.</p>
+<div class="layout">
+<aside class="panel"><h2>Assumptions</h2><form id="assumptions" class="inputs">
+<div class="group">Purchase and finance</div>
+<div class="field"><label for="startYear">Purchase year</label><input id="startYear" type="number" step="1" value="2026"></div>
+<div class="field"><label for="purchasePrice">Purchase price ($)</label><input id="purchasePrice" type="number" min="0" step="1000" value="800000"></div>
+<div class="field"><label for="deposit">Deposit ($)</label><input id="deposit" type="number" min="0" step="1000" value="160000"></div>
+<div class="field"><label for="buyingCosts">Buying costs ($)</label><input id="buyingCosts" type="number" min="0" step="1000" value="40000"></div>
+<div class="field"><label for="loanAmount">Loan amount ($), calculated</label><input id="loanAmount" readonly aria-readonly="true"></div>
+<div class="field"><label for="interestRate">Mortgage interest rate (%)</label><input id="interestRate" type="number" min="0" max="100" step=".1" value="6"></div>
+<div class="field"><label for="loanTerm">Mortgage term (years)</label><input id="loanTerm" type="number" min="1" max="100" step="1" value="30"></div>
+<div class="field"><label for="loanRepayment">Annual loan repayment ($), calculated</label><input id="loanRepayment" readonly aria-readonly="true"></div>
+<div class="group">Rent and growth</div>
+<div class="field"><label for="rent">Annual rental income ($)</label><input id="rent" type="number" min="0" step="100" value="36000"></div>
+<div class="field"><label for="propertyCosts">Annual property costs ($)</label><input id="propertyCosts" type="number" min="0" step="100" value="8000"></div>
+<div class="field"><label for="appreciation">Property appreciation (% per year)</label><input id="appreciation" type="number" min="-100" step=".1" value="3"></div>
+<div class="field"><label for="rentGrowth">Rental income growth (% per year)</label><input id="rentGrowth" type="number" min="-100" step=".1" value="2"></div>
+<div class="group">Sale and capital gains tax</div>
+<div class="field"><label for="sellingCosts">Selling costs (% of sale price)</label><input id="sellingCosts" type="number" min="0" max="100" step=".1" value="2.5"></div>
+<div class="field"><label for="costBase">Other eligible CGT cost base costs ($)</label><input id="costBase" type="number" min="0" step="100" value="0"></div>
+<div class="field"><label for="capitalLosses">Available capital losses ($)</label><input id="capitalLosses" type="number" min="0" step="100" value="0"></div>
+<div class="field"><label for="cgtDiscount">CGT discount (%)</label><input id="cgtDiscount" type="number" min="0" max="100" step="1" value="50"></div>
+<div class="field"><label for="mainResidence">Main residence exempt portion (%)</label><input id="mainResidence" type="number" min="0" max="100" step="1" value="0"></div>
+<div class="field"><label for="taxRate">Marginal income tax rate incl. Medicare (%)</label><input id="taxRate" type="number" min="0" max="100" step=".5" value="39"></div>
+</form></aside>
+<section class="panel"><h2>Projection</h2><div class="summary" id="summary" aria-live="polite"></div>
+<div class="tablewrap"><table><thead><tr><th>Year</th><th>Net investment gain</th><th>Property value</th><th>Loan balance</th><th>Rental income</th><th>Annual cash flow</th><th>Cumulative cash flow</th><th>Est. CGT if sold</th><th>Net sale proceeds</th></tr></thead><tbody id="results"></tbody></table></div>
+<p class="hint">Purchase year is the starting position, followed by one row for each mortgage year. Rent is received at the end of each year. Repayments use annual compounding and annual payments to match the original CSV. Net investment gain assumes sale at that year's value and includes cash flow to date, less the original deposit and buying costs. Estimated CGT is illustrative, not an annual tax payment. It assumes individual ownership, an eligible 50% discount after at least 12 months, and a fixed marginal rate. Tax deductions, depreciation, rental income tax, loan fees, changing expenses, land tax variations, capital works and detailed CGT eligibility rules are not modelled.</p>
+</section></div></main></body></html>
